@@ -42,13 +42,7 @@ class _HomePageState extends State<HomePage> {
           child: Wrap(
             children: <Widget>[
               AutoWidth(
-                sizes: <double, int>{
-                  sm: 24,
-                  md: 12,
-                  lg: 8,
-                  xl: 6,
-                  ll: 4,
-                },
+                sizes: _size,
                 height: 50,
                 builder: (context, constraints, useSize) {
                   return DecoratedBox(
@@ -101,7 +95,7 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               AutoWidth(
-                sizes: _size,
+                sizes: {..._size, xl: 12},
                 height: 50,
                 builder: (context, con, usixe) {
                   return DecoratedBox(
@@ -113,7 +107,7 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               AutoWidth(
-                sizes: _size,
+                sizes: {..._size, xl: 12},
                 height: 50,
                 builder: (context, con, usixe) {
                   return DecoratedBox(

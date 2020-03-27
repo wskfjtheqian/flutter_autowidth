@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
+///自动宽度的样式部件
 class AutoWidhtTheme extends SingleChildRenderObjectWidget {
   AutoWidhtTheme({
     Key key,
