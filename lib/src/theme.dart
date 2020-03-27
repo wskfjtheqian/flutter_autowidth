@@ -7,7 +7,8 @@ class AutoWidhtTheme extends SingleChildRenderObjectWidget {
     Key key,
     Widget child,
     AutoWidhtThemeData data,
-  }) : super(
+  })  : assert(null != child),
+        super(
           key: key,
           child: child,
         ) {

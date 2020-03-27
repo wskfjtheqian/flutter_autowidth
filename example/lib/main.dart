@@ -88,7 +88,7 @@ class _HomePageState extends State<HomePage> {
                 builder: (context, con, usixe) {
                   return DecoratedBox(
                     decoration: BoxDecoration(
-                      color: Colors.deepOrange,
+                      color: Colors.deepPurpleAccent,
                     ),
                     child: Text("data"),
                   );
@@ -100,7 +100,7 @@ class _HomePageState extends State<HomePage> {
                 builder: (context, con, usixe) {
                   return DecoratedBox(
                     decoration: BoxDecoration(
-                      color: Colors.deepOrange,
+                      color: Colors.amberAccent,
                     ),
                     child: Text("data"),
                   );
@@ -112,7 +112,7 @@ class _HomePageState extends State<HomePage> {
                 builder: (context, con, usixe) {
                   return DecoratedBox(
                     decoration: BoxDecoration(
-                      color: Colors.deepOrange,
+                      color: Colors.purpleAccent,
                     ),
                     child: Text("data"),
                   );
