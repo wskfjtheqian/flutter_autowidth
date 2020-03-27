@@ -67,18 +67,7 @@ class RenderAutoWidhtThemeBox extends RenderBox with RenderObjectWithChildMixin<
 
   @override
   bool hitTestChildren(BoxHitTestResult result, {Offset position}) {
-    if (child != null) {
-      final BoxParentData childParentData = child.parentData as BoxParentData;
-      return result.addWithPaintOffset(
-        offset: childParentData.offset,
-        position: position,
-        hitTest: (BoxHitTestResult result, Offset transformed) {
-          assert(transformed == position - childParentData.offset);
-          return child.hitTest(result, position: transformed);
-        },
-      );
-    }
-    return false;
+    return child.hitTestChildren(result, position: position);
   }
 }
 
@@ -96,8 +85,10 @@ class AutoWidhtThemeData {
     _sizes.sort((a, b) => (a - b).ceil());
   }
 
+  ///切分数量
   final int split;
 
+  ///定义屏幕尺寸
   List<double> _sizes;
 
   List<double> get sizes => _sizes;

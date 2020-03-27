@@ -4,29 +4,34 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_aoutwidth/src/theme.dart';
 
-class AutoWidth extends SingleChildRenderObjectWidget {
+///创建部件的回调
+/// context 上下文
+/// constraints AutoWidth 组件的当前尺寸
+/// useSize 当前组件使用的屏幕
+typedef AutoWidthBuilder = Widget Function(BuildContext context, BoxConstraints constraints, double useSize);
+
+///根据尺寸尺寸自动调解部件宽度
+class AutoWidth extends RenderObjectWidget {
   AutoWidth({
     Key key,
-    Widget child,
     this.sizes = const {},
-  }) : super(key: key) {
-    _child = child;
-  }
+    this.builder,
+    this.height,
+  })  : assert(null != builder),
+        assert(null != sizes),
+        super(key: key);
 
-  SingleChildRenderObjectElement _element;
+  ///组件的高度 ,默认为null会根据子部件调整高度
+  final double height;
 
+  ///
   final Map<double, int> sizes;
 
-  Widget _child;
-
-  @override
-  Widget get child {
-    return _child;
-  }
+  final AutoWidthBuilder builder;
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return _RenderAutoWidthBox(sizes).._onReBuilder = _onReBuilder;
+    return _RenderAutoWidthBox(sizes);
   }
 
   @override
@@ -35,31 +40,153 @@ class AutoWidth extends SingleChildRenderObjectWidget {
   }
 
   @override
-  SingleChildRenderObjectElement createElement() {
-    return _element = super.createElement();
-  }
-
-  _onReBuilder(double useSize) {
-    Timer(Duration(), () {
-      _element.markNeedsBuild();
-    });
+  _AutoWidthElement createElement() {
+    return _AutoWidthElement(this);
   }
 }
+
+class _AutoWidthElement extends RenderObjectElement {
+  _AutoWidthElement(AutoWidth widget) : super(widget);
+
+  @override
+  AutoWidth get widget => super.widget as AutoWidth;
+
+  @override
+  _RenderAutoWidthBox get renderObject => super.renderObject as _RenderAutoWidthBox;
+
+  Element _child;
+
+  @override
+  void visitChildren(ElementVisitor visitor) {
+    if (_child != null) visitor(_child);
+  }
+
+  @override
+  void forgetChild(Element child) {
+    assert(child == _child);
+    _child = null;
+    super.forgetChild(child);
+  }
+
+  @override
+  void mount(Element parent, dynamic newSlot) {
+    super.mount(parent, newSlot); // Creates the renderObject.
+    renderObject.updateCallback(_layout);
+  }
+
+  @override
+  void update(AutoWidth newWidget) {
+    assert(widget != newWidget);
+    super.update(newWidget);
+    assert(widget == newWidget);
+    renderObject.updateCallback(_layout);
+    renderObject.markNeedsLayout();
+  }
+
+  @override
+  void performRebuild() {
+    renderObject.markNeedsLayout();
+    super.performRebuild();
+  }
+
+  @override
+  void unmount() {
+    renderObject.updateCallback(null);
+    super.unmount();
+  }
+
+  void _layout(BoxConstraints constraints, double useSize) {
+    owner.buildScope(this, () {
+      Widget built;
+      if (widget.builder != null) {
+        try {
+          built = widget.builder(this, constraints, useSize);
+          debugWidgetBuilderValue(widget, built);
+        } catch (e, stack) {
+          built = ErrorWidget.builder(
+            _debugReportException(
+              ErrorDescription('building $widget'),
+              e,
+              stack,
+              informationCollector: () sync* {
+                yield DiagnosticsDebugCreator(DebugCreator(this));
+              },
+            ),
+          );
+        }
+      }
+      try {
+        _child = updateChild(_child, built, null);
+        assert(_child != null);
+      } catch (e, stack) {
+        built = ErrorWidget.builder(
+          _debugReportException(
+            ErrorDescription('building $widget'),
+            e,
+            stack,
+            informationCollector: () sync* {
+              yield DiagnosticsDebugCreator(DebugCreator(this));
+            },
+          ),
+        );
+        _child = updateChild(null, built, slot);
+      }
+    });
+  }
+
+  @override
+  void insertChildRenderObject(RenderObject child, dynamic slot) {
+    final _RenderAutoWidthBox renderObject = this.renderObject;
+    assert(slot == null);
+    assert(renderObject.debugValidateChild(child));
+    renderObject.child = child;
+    assert(renderObject == this.renderObject);
+  }
+
+  @override
+  void moveChildRenderObject(RenderObject child, dynamic slot) {
+    assert(false);
+  }
+
+  @override
+  void removeChildRenderObject(RenderObject child) {
+    final _RenderAutoWidthBox renderObject = this.renderObject;
+    assert(renderObject.child == child);
+    renderObject.child = null;
+    assert(renderObject == this.renderObject);
+  }
+}
+
+typedef _RenderAutoWidthBoxBuilder = void Function(BoxConstraints constraints, double useSize);
 
 class _RenderAutoWidthBox extends RenderBox with RenderObjectWithChildMixin<RenderBox> {
   Map<double, int> sizes;
   double _key;
 
-  void Function(double useSize) _onReBuilder;
-
   _RenderAutoWidthBox(this.sizes);
 
   @override
-  bool get sizedByParent => false;
+  double computeMinIntrinsicWidth(double height) {
+    assert(_debugThrowIfNotCheckingIntrinsics());
+    return 0.0;
+  }
 
   @override
-  void paint(PaintingContext context, Offset offset) {
-    context.paintChild(child, offset);
+  double computeMaxIntrinsicWidth(double height) {
+    assert(_debugThrowIfNotCheckingIntrinsics());
+    return 0.0;
+  }
+
+  @override
+  double computeMinIntrinsicHeight(double width) {
+    assert(_debugThrowIfNotCheckingIntrinsics());
+    return 0.0;
+  }
+
+  @override
+  double computeMaxIntrinsicHeight(double width) {
+    assert(_debugThrowIfNotCheckingIntrinsics());
+    return 0.0;
   }
 
   @override
@@ -79,31 +206,68 @@ class _RenderAutoWidthBox extends RenderBox with RenderObjectWithChildMixin<Rend
           break;
         }
       }
-      if (_key != key && null != _onReBuilder) {
-        _onReBuilder(key);
+      if (_key != key && null != _callback) {
+        invokeLayoutCallback((constraints) {
+          _callback(constraints, key);
+        });
       }
       width = width / (temp as RenderAutoWidhtThemeBox).data.split * sizes[key];
       _key = key;
     }
-
-    child.layout(BoxConstraints.tightForFinite(width: width), parentUsesSize: true);
-    size = child.size;
-    print("aa ${size.width}----$width");
+    var cons = BoxConstraints.tightForFinite(width: width);
+    if (child != null) {
+      child.layout(cons, parentUsesSize: true);
+      size = cons.constrain(child.size);
+    } else {
+      size = Size(constraints.biggest.width, 0);
+    }
   }
 
   @override
   bool hitTestChildren(BoxHitTestResult result, {Offset position}) {
-    if (child != null) {
-      final BoxParentData childParentData = child.parentData as BoxParentData;
-      return result.addWithPaintOffset(
-        offset: childParentData.offset,
-        position: position,
-        hitTest: (BoxHitTestResult result, Offset transformed) {
-          assert(transformed == position - childParentData.offset);
-          return child.hitTest(result, position: transformed);
-        },
-      );
-    }
-    return false;
+    return child?.hitTest(result, position: position) ?? false;
   }
+
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    if (child != null) context.paintChild(child, offset);
+  }
+
+  _RenderAutoWidthBoxBuilder _callback;
+
+  void updateCallback(_RenderAutoWidthBoxBuilder value) {
+    if (value == _callback) return;
+    _callback = value;
+    markNeedsLayout();
+  }
+
+  bool _debugThrowIfNotCheckingIntrinsics() {
+    assert(() {
+      if (!RenderObject.debugCheckingIntrinsics) {
+        throw FlutterError('LayoutBuilder does not support returning intrinsic dimensions.\n'
+            'Calculating the intrinsic dimensions would require running the layout '
+            'callback speculatively, which might mutate the live render object tree.');
+      }
+      return true;
+    }());
+
+    return true;
+  }
+}
+
+FlutterErrorDetails _debugReportException(
+  DiagnosticsNode context,
+  dynamic exception,
+  StackTrace stack, {
+  InformationCollector informationCollector,
+}) {
+  final FlutterErrorDetails details = FlutterErrorDetails(
+    exception: exception,
+    stack: stack,
+    library: 'widgets library',
+    context: context,
+    informationCollector: informationCollector,
+  );
+  FlutterError.reportError(details);
+  return details;
 }

@@ -30,16 +30,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: <Widget>[
-          InkWell(
-            child: Text("data"),
-            onTap: () {
-              setState(() {});
-            },
-          ),
-        ],
-      ),
       body: Container(
         child: Center(
           child: Wrap(
@@ -50,12 +40,19 @@ class _HomePageState extends State<HomePage> {
                   lg: 12,
                   sm: 24,
                 },
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.lightGreen,
-                  ),
-                  child: Text("data"),
-                ),
+                builder: (context, constraints, useSize) {
+                  return DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Colors.lightGreen,
+                    ),
+                    child: Align(
+                      alignment: useSize < lg ? Alignment.centerLeft : Alignment.centerRight,
+                      child: Text(
+                        "data",
+                      ),
+                    ),
+                  );
+                },
               ),
               AutoWidth(
                 sizes: <double, int>{
@@ -63,12 +60,14 @@ class _HomePageState extends State<HomePage> {
                   lg: 12,
                   sm: 24,
                 },
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.blueAccent,
-                  ),
-                  child: Text("data"),
-                ),
+                builder: (context, con, usixe) {
+                  return DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Colors.blueAccent,
+                    ),
+                    child: Text("data"),
+                  );
+                },
               ),
               AutoWidth(
                 sizes: <double, int>{
@@ -76,12 +75,14 @@ class _HomePageState extends State<HomePage> {
                   lg: 24,
                   sm: 24,
                 },
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.deepOrange,
-                  ),
-                  child: Text("data"),
-                ),
+                builder: (context, con, usixe) {
+                  return DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Colors.deepOrange,
+                    ),
+                    child: Text("data"),
+                  );
+                },
               ),
             ],
           ),
