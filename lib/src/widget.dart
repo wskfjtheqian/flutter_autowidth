@@ -31,7 +31,7 @@ class AutoWidth extends RenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return _RenderAutoWidthBox(sizes);
+    return _RenderAutoWidthBox(sizes, height);
   }
 
   @override
@@ -162,8 +162,9 @@ typedef _RenderAutoWidthBoxBuilder = void Function(BoxConstraints constraints, d
 class _RenderAutoWidthBox extends RenderBox with RenderObjectWithChildMixin<RenderBox> {
   Map<double, int> sizes;
   double _key;
+  double height;
 
-  _RenderAutoWidthBox(this.sizes);
+  _RenderAutoWidthBox(this.sizes, this.height);
 
   @override
   double computeMinIntrinsicWidth(double height) {
@@ -195,31 +196,32 @@ class _RenderAutoWidthBox extends RenderBox with RenderObjectWithChildMixin<Rend
     while (null != temp && !(temp is RenderAutoWidhtThemeBox)) {
       temp = temp.parent;
     }
+    assert(null != temp, "not find AutoWidhtTheme");
 
     var width = constraints.biggest.width;
     var keys = sizes.keys.toList()..sort((a, b) => (b - a).ceil());
-    if (null != temp && 0 < sizes.length) {
-      double key = (temp as RenderAutoWidhtThemeBox).useSize;
-      for (var item in keys) {
-        if (key > item) {
-          key = item;
-          break;
-        }
+    double key = (temp as RenderAutoWidhtThemeBox).useSize;
+    for (var item in keys) {
+      if (key > item) {
+        key = item;
+        break;
       }
-      if (_key != key && null != _callback) {
-        invokeLayoutCallback((constraints) {
-          _callback(constraints, key);
-        });
-      }
-      width = width / (temp as RenderAutoWidhtThemeBox).data.split * sizes[key];
-      _key = key;
     }
-    var cons = BoxConstraints.tightForFinite(width: width);
+    width = width / (temp as RenderAutoWidhtThemeBox).data.split * sizes[key];
+    var cons = BoxConstraints.tightForFinite(width: width - 0.0001, height: height ?? double.infinity);
+
+    if (_key != key && null != _callback) {
+      invokeLayoutCallback((constraints) {
+        _callback(cons, key);
+      });
+    }
+    _key = key;
+
     if (child != null) {
       child.layout(cons, parentUsesSize: true);
       size = cons.constrain(child.size);
     } else {
-      size = Size(constraints.biggest.width, 0);
+      size = Size(constraints.biggest.width, height ?? 0);
     }
   }
 

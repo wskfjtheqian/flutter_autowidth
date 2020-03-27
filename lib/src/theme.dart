@@ -75,10 +75,11 @@ const double sm = 540;
 const double md = 720;
 const double lg = 960;
 const double xl = 1140;
+const double ll = 1600;
 
 class AutoWidhtThemeData {
   AutoWidhtThemeData({
-    List<double> sizes = const [sm, md, lg, xl],
+    List<double> sizes = const [sm, md, lg, xl, ll],
     this.split = 24,
   }) {
     _sizes = sizes.toList();

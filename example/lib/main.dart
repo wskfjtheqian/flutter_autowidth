@@ -29,17 +29,21 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    var _size = <double, int>{
+      sm: 24,
+      md: 12,
+      lg: 8,
+      xl: 6,
+      ll: 4,
+    };
     return Scaffold(
       body: Container(
         child: Center(
           child: Wrap(
             children: <Widget>[
               AutoWidth(
-                sizes: <double, int>{
-                  xl: 8,
-                  lg: 12,
-                  sm: 24,
-                },
+                sizes: _size,
+                height: 50,
                 builder: (context, constraints, useSize) {
                   return DecoratedBox(
                     decoration: BoxDecoration(
@@ -55,11 +59,8 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               AutoWidth(
-                sizes: <double, int>{
-                  xl: 8,
-                  lg: 12,
-                  sm: 24,
-                },
+                sizes: _size,
+                height: 50,
                 builder: (context, con, usixe) {
                   return DecoratedBox(
                     decoration: BoxDecoration(
@@ -70,11 +71,44 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               AutoWidth(
-                sizes: <double, int>{
-                  xl: 8,
-                  lg: 24,
-                  sm: 24,
+                sizes: _size,
+                height: 50,
+                builder: (context, con, usixe) {
+                  return DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Colors.deepOrange,
+                    ),
+                    child: Text("data"),
+                  );
                 },
+              ),
+              AutoWidth(
+                sizes: _size,
+                height: 50,
+                builder: (context, con, usixe) {
+                  return DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Colors.deepOrange,
+                    ),
+                    child: Text("data"),
+                  );
+                },
+              ),
+              AutoWidth(
+                sizes: _size,
+                height: 50,
+                builder: (context, con, usixe) {
+                  return DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Colors.deepOrange,
+                    ),
+                    child: Text("data"),
+                  );
+                },
+              ),
+              AutoWidth(
+                sizes: _size,
+                height: 50,
                 builder: (context, con, usixe) {
                   return DecoratedBox(
                     decoration: BoxDecoration(
