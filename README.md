@@ -1,6 +1,6 @@
 # flutter_aoutwidth
 
-A new Flutter package project.
+根据屏幕调整组件的宽度.
 
 ## Getting Started
 

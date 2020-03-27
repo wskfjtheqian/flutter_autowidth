@@ -42,7 +42,13 @@ class _HomePageState extends State<HomePage> {
           child: Wrap(
             children: <Widget>[
               AutoWidth(
-                sizes: _size,
+                sizes: <double, int>{
+                  sm: 24,
+                  md: 12,
+                  lg: 8,
+                  xl: 6,
+                  ll: 4,
+                },
                 height: 50,
                 builder: (context, constraints, useSize) {
                   return DecoratedBox(
@@ -114,7 +120,12 @@ class _HomePageState extends State<HomePage> {
                     decoration: BoxDecoration(
                       color: Colors.purpleAccent,
                     ),
-                    child: Text("data"),
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {});
+                      },
+                      child: Text("data"),
+                    ),
                   );
                 },
               ),

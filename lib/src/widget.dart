@@ -238,6 +238,7 @@ class _RenderAutoWidthBox extends RenderBox with RenderObjectWithChildMixin<Rend
   _RenderAutoWidthBoxBuilder _callback;
 
   void updateCallback(_RenderAutoWidthBoxBuilder value) {
+    _key = null;
     if (value == _callback) return;
     _callback = value;
     markNeedsLayout();
