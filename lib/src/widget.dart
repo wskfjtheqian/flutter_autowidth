@@ -36,7 +36,9 @@ class AutoWidth extends RenderObjectWidget {
 
   @override
   void updateRenderObject(BuildContext context, _RenderAutoWidthBox renderObject) {
-    renderObject.sizes = sizes;
+    renderObject
+      ..sizes = sizes
+      ..height = height;
   }
 
   @override
@@ -162,9 +164,16 @@ typedef _RenderAutoWidthBoxBuilder = void Function(BoxConstraints constraints, d
 class _RenderAutoWidthBox extends RenderBox with RenderObjectWithChildMixin<RenderBox> {
   Map<double, int> sizes;
   double _key;
-  double height;
+  double _height;
 
-  _RenderAutoWidthBox(this.sizes, this.height);
+  double get height => _height;
+
+  set height(double value) {
+    _height = value;
+    markNeedsLayout();
+  }
+
+  _RenderAutoWidthBox(this.sizes, this._height);
 
   @override
   double computeMinIntrinsicWidth(double height) {
@@ -207,8 +216,13 @@ class _RenderAutoWidthBox extends RenderBox with RenderObjectWithChildMixin<Rend
         break;
       }
     }
-    width = width / (temp as RenderAutoWidhtThemeBox).data.split * sizes[key];
-    var cons = BoxConstraints.tightForFinite(width: width - 0.0001, height: height ?? double.infinity);
+    if (sizes.containsKey(key)) {
+      width = width / (temp as RenderAutoWidhtThemeBox).data.split * sizes[key];
+    }
+    var cons = BoxConstraints.tightForFinite(
+      width: width - 0.0001,
+      height: null == height ? double.infinity : (height == double.infinity ? constraints.biggest.height : height),
+    );
 
     if (_key != key && null != _callback) {
       invokeLayoutCallback((constraints) {
@@ -219,11 +233,14 @@ class _RenderAutoWidthBox extends RenderBox with RenderObjectWithChildMixin<Rend
 
     if (child != null) {
       child.layout(cons, parentUsesSize: true);
-      size = cons.constrain(child.size);
+      size = constraints.constrain(child.size);
     } else {
-      size = Size(constraints.biggest.width, height ?? 0);
+      size = constraints.constrainDimensions(width, height ?? 0);
     }
   }
+
+  @override
+  bool get sizedByParent => false;
 
   @override
   bool hitTestChildren(BoxHitTestResult result, {Offset position}) {

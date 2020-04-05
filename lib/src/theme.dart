@@ -28,6 +28,13 @@ class AutoWidhtTheme extends SingleChildRenderObjectWidget {
   void updateRenderObject(BuildContext context, RenderAutoWidhtThemeBox renderObject) {
     renderObject._data = _data;
   }
+
+  static AutoWidhtThemeData of(BuildContext context) {
+    assert(null != context);
+    AutoWidhtTheme theme = context.findAncestorWidgetOfExactType<AutoWidhtTheme>();
+    assert(null != theme, "Not find AutoWidhtTheme");
+    return theme._data;
+  }
 }
 
 class RenderAutoWidhtThemeBox extends RenderBox with RenderObjectWithChildMixin<RenderBox> {
