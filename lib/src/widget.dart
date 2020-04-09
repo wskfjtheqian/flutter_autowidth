@@ -31,6 +31,7 @@ class AutoWidth extends RenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
+
     return _RenderAutoWidthBox(sizes, height);
   }
 
