@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_aoutwidth/src/theme.dart';
+import './theme.dart';
 
 ///创建部件的回调
 /// context 上下文
