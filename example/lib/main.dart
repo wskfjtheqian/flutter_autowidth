@@ -45,16 +45,8 @@ class _HomePageState extends State<HomePage> {
                 sizes: _size,
                 height: 50,
                 builder: (context, constraints, useSize) {
-                  return DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: Colors.lightGreen,
-                    ),
-                    child: Align(
-                      alignment: useSize < lg ? Alignment.centerLeft : Alignment.centerRight,
-                      child: Text(
-                        "data",
-                      ),
-                    ),
+                  return Text(
+                    "data",
                   );
                 },
               ),
