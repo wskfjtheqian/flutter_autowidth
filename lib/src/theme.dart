@@ -30,7 +30,10 @@ class AutoWidhtTheme extends SingleChildRenderObjectWidget {
   }
 
   static AutoWidhtThemeData of(BuildContext context) {
-    return context.findAncestorWidgetOfExactType<AutoWidhtTheme>()._data;
+    assert(null != context);
+    AutoWidhtTheme theme = context.findAncestorWidgetOfExactType<AutoWidhtTheme>();
+    assert(null != theme, "Not find AutoWidhtTheme");
+    return theme._data;
   }
 }
 
