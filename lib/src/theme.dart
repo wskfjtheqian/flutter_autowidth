@@ -55,12 +55,22 @@ class RenderAutoWidhtThemeBox extends RenderBox with RenderObjectWithChildMixin<
   void paint(PaintingContext context, Offset offset) {
     context.paintChild(child, offset);
   }
-
+@override
+  void layout(Constraints constraints, {bool parentUsesSize = false}) {
+    // TODO: implement layout
+    super.layout(constraints, parentUsesSize: parentUsesSize);
+  }
   @override
   void performLayout() {
     _onSizeChange();
     child.layout(BoxConstraints.tight(size));
     super.performLayout();
+  }
+
+
+  @override
+  void performResize() {
+    size = constraints.biggest;
   }
 
   void _onSizeChange() {
@@ -77,6 +87,10 @@ class RenderAutoWidhtThemeBox extends RenderBox with RenderObjectWithChildMixin<
   @override
   bool hitTestChildren(BoxHitTestResult result, {Offset position}) {
     return child.hitTestChildren(result, position: position);
+  }
+  @override
+  bool hitTest(BoxHitTestResult result, {Offset position}) {
+    return super.hitTest(result, position:position);
   }
 }
 
